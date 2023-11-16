@@ -1,0 +1,15 @@
+<ul>
+    {% if not user.is_authenticated %}
+    <a href="http://127.0.0.1:8000/log-in%20page">log in</a>
+    <a href="http://127.0.0.1:8000/sign-up%20page">sign up</a>
+    <a href="http://127.0.0.1:8000/chat%20page">chat</a>
+    <a href="http://127.0.0.1:8080/main">main</a>
+    {%else%}
+    <a href="http://127.0.0.1:8000/log-out%20page">log out</a>
+    <a href="http://127.0.0.1:8000/chat%20page">chat</a>
+    <a href="http://127.0.0.1:8080/main">main</a>
+    {% endif %}
+
+
+
+</ul>

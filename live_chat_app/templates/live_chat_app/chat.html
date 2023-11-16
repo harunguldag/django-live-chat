@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'live_chat_app/style.css' %}">
+    
+
+</head>
+<body>
+
+    <!-- <div class="navbar" id="navbar">
+        <p>asdasd</p>
+    </div> -->
+
+<button id="openFormButton" class="post_button" >+</button>
+<div id="overlay" class="overlay">
+    <div id="postForm" class="post-form">
+        <!-- Gönderi Formu içeriği buraya gelecek -->
+        
+        <form id="form">
+            <input type="text" name="message"/>
+            <input type="hidden"  name="user_id" value="{{user.id}}">
+            <input type="submit" value="Gönder">
+        </form>
+    </div>
+</div>
+<div class="main">
+    
+    <div id="messages"></div>
+    
+    {%for post in list%}
+    
+<div class="smain">
+    <h4>{{post.user}}</h4>
+<p>{{post.text}}</p>
+</div>
+
+{%endfor%}
+
+</div>
+<script type="text/javascript">
+    let url = `ws://${window.location.host}/ws/socket-server/`
+
+    const chatSocket = new WebSocket(url)
+
+    chatSocket.onmessage = function(e){
+        let data = JSON.parse(e.data)
+        console.log('Data:', data)
+
+        if(data.type === 'chat'){
+            let messages = document.getElementById('messages')
+
+            messages.insertAdjacentHTML('afterbegin', `<div class="smain">
+                                    <h4>${data.user_name}</h4>
+                                    <p>${data.message}</p>
+                                    
+                                    
+                                </div>`)
+        }
+    }
+
+    let form = document.getElementById('form')
+    form.addEventListener('submit', (e)=> {
+        e.preventDefault()
+        let message = e.target.message.value 
+        let user_id = e.target.user_id.value 
+        chatSocket.send(JSON.stringify({
+            'message':message,
+            'user_id':user_id
+            
+        }))
+        form.reset()
+    })
+    document.addEventListener("DOMContentLoaded", function () {
+    const openFormButton = document.getElementById("openFormButton");
+    const overlay = document.getElementById("overlay");
+
+    openFormButton.addEventListener("click", function () {
+        overlay.style.display = "block";
+    });
+    form.addEventListener("submit", function (e) {
+        e.preventDefault(); // Formun varsayılan gönderimini engelle
+        overlay.style.display = "none"; // Formu kapatın
+        // Form verilerini sunucuya gönderme veya işleme devam edebilirsiniz
+    });
+});
+
+</script>
+<!-- <script src="{% static 'live_chat_app/script.js' %}"></script> -->
+
+</body>
+</html>
